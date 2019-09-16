@@ -1,0 +1,20 @@
+#!/bin/sh
+image_id=`/usr/local/bin/docker ps -f name=tor-proxy -q`
+if [ "$1" == "stop" ];then
+  if [ "$image_id" !=  "" ];then
+    echo "Killing tor-proxy image $image_id"
+    /usr/local/bin/docker kill $image_id > /dev/null 2>&1
+    /usr/local/bin/docker rm $image_id > /dev/null 2>&1
+  fi
+else
+  if [ "$image_id" ==  "" ];then
+    echo "Starting tor-proxy"
+    /usr/local/bin/docker run \
+		-d \
+		--rm \
+		--name tor-proxy \
+		-p 8118:8118 \
+		-p 9050:9050 \
+	dperson/torproxy 
+  fi
+fi
